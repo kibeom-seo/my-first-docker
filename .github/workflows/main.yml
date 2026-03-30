@@ -1,0 +1,30 @@
+name: CI to Docker Hub
+
+# main 브랜치에 코드가 push될 때마다 실행해라!
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 소스 코드 가져오기
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Docker Hub 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. 도커 이미지 빌드하고 창고로 쏘기 (Push)
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # [중요] 본인아이디 부분을 수정하세요!
+          tags: kibeom-seo/my-web-node:latest
